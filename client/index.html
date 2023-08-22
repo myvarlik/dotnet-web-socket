@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Örneği</title>
+</head>
+<body>
+    <input type="text" id="messageInput" placeholder="Mesajınızı girin">
+    <button id="sendButton">Gönder</button>
+    <div id="output"></div>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8080");
+
+        socket.onopen = () => {
+            console.log("WebSocket bağlandı.");
+        };
+
+        socket.onmessage = (event) => {
+            const output = document.getElementById("output");
+            output.innerHTML = "Gelen Mesaj: " + event.data;
+        };
+
+        socket.onclose = (event) => {
+            if (event.wasClean) {
+                console.log(`WebSocket bağlantısı kapatıldı, kod: ${event.code}, neden: ${event.reason}`);
+            } else {
+                console.error("WebSocket bağlantısı beklenmedik şekilde kesildi.");
+            }
+        };
+
+        document.getElementById("sendButton").addEventListener("click", () => {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value;
+            socket.send(message);
+        });
+    </script>
+</body>
+</html>
